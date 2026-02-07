@@ -42,11 +42,7 @@ jobs:
     container: ghcr.io/railwayapp/cli:latest
     steps:
       - uses: actions/checkout@v4
-      - name: Verify Railway auth
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: railway status
-      - name: Deploy
+      - name: Deploy to Railway
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: railway up --service=${{ secrets.RAILWAY_SERVICE_ID }}
