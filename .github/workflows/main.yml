@@ -39,9 +39,10 @@ jobs:
   deploy:
     needs: build-test
     runs-on: ubuntu-latest
-    container: ghcr.io/railwayapp/cli:latest
     steps:
       - uses: actions/checkout@v4
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
       - name: Deploy to Railway
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
