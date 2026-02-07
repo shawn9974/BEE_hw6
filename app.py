@@ -11,11 +11,6 @@ from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 
 # 1. Check API Key - warn if not set but don't fail immediately
 # In AWS App Runner, this will be injected by AWS Secrets Manager
-if "OPENAI_API_KEY" not in os.environ:
-    print("⚠️  WARNING: OPENAI_API_KEY environment variable not set. Embeddings will fail.")
-else:
-    print("✅ OPENAI_API_KEY is set")
-
 if "XAI_API_KEY" not in os.environ:
     print("⚠️  WARNING: XAI_API_KEY environment variable not set. Chat functionality will fail.")
 else:
@@ -28,7 +23,11 @@ def get_rag_chain():
     global rag_chain
     if rag_chain is None:
         print("Loading RAG model and vector store...")
-        embeddings = OpenAIEmbeddings()
+        embeddings = OpenAIEmbeddings(
+            model="grok-embedding-small",
+            openai_api_key=os.environ.get("XAI_API_KEY"),
+            openai_api_base="https://api.x.ai/v1",
+        )
         vectorstore = FAISS.load_local(
             "faiss_index", 
             embeddings, 

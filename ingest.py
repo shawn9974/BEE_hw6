@@ -5,8 +5,8 @@ from langchain_community.vectorstores import FAISS
 from langchain_openai import OpenAIEmbeddings
 
 # 确保 API Key 存在
-if "OPENAI_API_KEY" not in os.environ:
-    raise EnvironmentError("请先设置 OPENAI_API_KEY 环境变量")
+if "XAI_API_KEY" not in os.environ:
+    raise EnvironmentError("请先设置 XAI_API_KEY 环境变量")
 
 # 加载文档
 loader = TextLoader("./data.txt")
@@ -17,7 +17,11 @@ text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
 docs = text_splitter.split_documents(documents)
 
 # 创建向量并存储
-embeddings = OpenAIEmbeddings()
+embeddings = OpenAIEmbeddings(
+    model="grok-embedding-small",
+    openai_api_key=os.environ.get("XAI_API_KEY"),
+    openai_api_base="https://api.x.ai/v1",
+)
 db = FAISS.from_documents(docs, embeddings)
 
 # 保存到本地
