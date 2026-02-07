@@ -6,4 +6,4 @@ langchain-core
 langchain-openai
 langchain-community
 faiss-cpu
-tiktoken
+sentence-transformers

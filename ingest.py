@@ -2,11 +2,7 @@ import os
 from langchain_text_splitters import CharacterTextSplitter
 from langchain_community.document_loaders import TextLoader
 from langchain_community.vectorstores import FAISS
-from langchain_openai import OpenAIEmbeddings
-
-# 确保 API Key 存在
-if "XAI_API_KEY" not in os.environ:
-    raise EnvironmentError("请先设置 XAI_API_KEY 环境变量")
+from langchain_community.embeddings import HuggingFaceEmbeddings
 
 # 加载文档
 loader = TextLoader("./data.txt")
@@ -17,11 +13,7 @@ text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
 docs = text_splitter.split_documents(documents)
 
 # 创建向量并存储
-embeddings = OpenAIEmbeddings(
-    model="grok-embedding-small",
-    openai_api_key=os.environ.get("XAI_API_KEY"),
-    openai_api_base="https://api.x.ai/v1",
-)
+embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 db = FAISS.from_documents(docs, embeddings)
 
 # 保存到本地

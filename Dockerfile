@@ -8,12 +8,15 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 4. 复制所有代码和数据
+# 4. Pre-download the HuggingFace embedding model so it's cached in the image
+RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('all-MiniLM-L6-v2')"
+
+# 5. 复制所有代码和数据
 # 关键: 这一步会把 app.py, data.txt 和 faiss_index 文件夹都复制进去
 COPY . .
 
-# 4.5 构建 FAISS 索引 (如果还不存在)
-# RUN python ingest.py
+# 5.5 构建 FAISS 索引 (使用本地 HuggingFace 嵌入模型，无需 API key)
+RUN python ingest.py
 
 # 5. 暴露端口
 EXPOSE 8080

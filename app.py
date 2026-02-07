@@ -7,7 +7,8 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 from langchain_community.vectorstores import FAISS
-from langchain_openai import OpenAIEmbeddings, ChatOpenAI
+from langchain_openai import ChatOpenAI
+from langchain_community.embeddings import HuggingFaceEmbeddings
 
 # 1. Check API Key - warn if not set but don't fail immediately
 # In AWS App Runner, this will be injected by AWS Secrets Manager
@@ -23,11 +24,7 @@ def get_rag_chain():
     global rag_chain
     if rag_chain is None:
         print("Loading RAG model and vector store...")
-        embeddings = OpenAIEmbeddings(
-            model="grok-embedding-small",
-            openai_api_key=os.environ.get("XAI_API_KEY"),
-            openai_api_base="https://api.x.ai/v1",
-        )
+        embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
         vectorstore = FAISS.load_local(
             "faiss_index", 
             embeddings, 
